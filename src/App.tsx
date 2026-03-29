@@ -1,120 +1,139 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+import { useEffect, useState } from 'react'
 import './App.css'
 
+const wishes = [
+  {
+    title: 'Самолётик мечты',
+    text: 'Пусть каждый новый день приносит вдохновение, энергию и счастливые моменты.',
+  },
+  {
+    title: 'Самолётик удачи',
+    text: 'Пусть все важные решения ведут к победам, а вокруг будут добрые и надёжные люди.',
+  },
+  {
+    title: 'Самолётик радости',
+    text: 'Пусть в доме будет уют, в сердце — тепло, а в жизни — много поводов для улыбки.',
+  },
+  {
+    title: 'Самолётик любви',
+    text: 'Пусть любовь, забота и поддержка всегда окружают тебя, куда бы ты ни шёл.',
+  },
+]
+
 function App() {
-  const [count, setCount] = useState(0)
+  const [isOpened, setIsOpened] = useState(false)
+  const [activeWish, setActiveWish] = useState<number | null>(null)
+
+  useEffect(() => {
+    const onScroll = () => {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight
+      const progress = maxScroll > 0 ? Math.min(window.scrollY / maxScroll, 1) : 0
+
+      document.documentElement.style.setProperty('--scroll-progress', progress.toFixed(3))
+    }
+
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <main className={`birthday-page ${isOpened ? 'opened' : 'closed'}`}>
+      {!isOpened ? (
+        <section className="intro-screen" aria-label="Открыть подарок">
+          <button
+            className="gift-box"
+            type="button"
+            onClick={() => setIsOpened(true)}
+            aria-label="Открыть подарочную коробку"
+          >
+            <span className="gift-lid" />
+            <span className="gift-ribbon vertical" />
+            <span className="gift-ribbon horizontal" />
+            <span className="gift-bow" />
+            <span className="gift-body" />
+          </button>
+        </section>
+      ) : (
+        <>
+          <section className="hero scroll-layer layer-top">
+            <p className="eyebrow">Birthday Story</p>
+            <h1>С Днём Рождения! 🔥🎉</h1>
+            <p className="subtitle">
+              Скролль вниз: фон и декор двигаются с параллаксом, а пожелания прилетят в
+              бумажных самолётиках.
+            </p>
+          </section>
 
-      <div className="ticks"></div>
+          <section className="cake-stage scroll-layer layer-mid" aria-label="Праздничный торт">
+            <div className="cake">
+              <div className="candle candle-left">
+                <span className="flame" />
+                <span className="glow" />
+                <span className="smoke" />
+              </div>
+              <div className="candle candle-center">
+                <span className="flame" />
+                <span className="glow" />
+                <span className="smoke" />
+              </div>
+              <div className="candle candle-right">
+                <span className="flame" />
+                <span className="glow" />
+                <span className="smoke" />
+              </div>
+              <div className="cream" />
+              <div className="cake-layer top-layer" />
+              <div className="cake-layer bottom-layer" />
+              <div className="cake-shadow" />
+            </div>
+          </section>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
+          <section className="planes-section scroll-layer layer-low" aria-label="Летающие самолётики">
+            <h2>Нажми на самолётик, чтобы открыть пожелание</h2>
+            <div className="planes-grid">
+              {wishes.map((wish, index) => (
+                <button
+                  key={wish.title}
+                  className={`plane-btn plane-${index + 1}`}
+                  onClick={() => setActiveWish(index)}
+                  type="button"
+                  aria-label={`Открыть пожелание: ${wish.title}`}
                 >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+                  <span className="plane-shape" aria-hidden="true" />
+                  <span className="plane-label">{wish.title}</span>
+                </button>
+              ))}
+            </div>
+          </section>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+          <div className="balloons" aria-hidden="true">
+            <span className="balloon b1" />
+            <span className="balloon b2" />
+            <span className="balloon b3" />
+            <span className="balloon b4" />
+          </div>
+
+          {activeWish !== null && (
+            <div className="wish-overlay" role="dialog" aria-modal="true">
+              <article className="wish-paper">
+                <button
+                  className="close-wish"
+                  type="button"
+                  onClick={() => setActiveWish(null)}
+                  aria-label="Закрыть пожелание"
+                >
+                  ×
+                </button>
+                <h3>{wishes[activeWish].title}</h3>
+                <p>{wishes[activeWish].text}</p>
+              </article>
+            </div>
+          )}
+        </>
+      )}
+    </main>
   )
 }
 
