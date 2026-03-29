@@ -38,6 +38,10 @@ function App() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+    return () => window.removeEventListener('mousemove', onMove)
+  }, [])
+
+function App() {
   return (
     <main className={`birthday-page ${isOpened ? 'opened' : 'closed'}`}>
       {!isOpened ? (
